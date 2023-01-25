@@ -28,7 +28,7 @@ const account1 = {
     '2023-01-23T12:01:20.894Z',
   ],
   currency: 'NGN',
-  locale: 'en-US',
+  locale: 'en-NG',
 };
 
 const account2 = {
@@ -95,7 +95,7 @@ const account4 = {
     '2020-07-26T12:01:20.894Z',
   ],
   currency: 'USD',
-  locale: 'en-US',
+  locale: 'en-GB',
 };
 
 const account5 = {
@@ -112,7 +112,7 @@ const account5 = {
     '2022-02-05T16:33:06.386Z',
   ],
   currency: 'USD',
-  locale: 'en-US',
+  locale: 'es_ES',
 };
 
 const accounts = [account1, account2, account3, account4, account5];
@@ -148,7 +148,7 @@ let sorted = false;
 
 // FUNCTIONS
 
-const formatMovementDate = date => {
+const formatMovementDate = (date, locale) => {
   const calcDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -158,11 +158,13 @@ const formatMovementDate = date => {
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
 
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
 
-  return `${day}-${month}-${year}`;
+  // return `${day}-${month}-${year}`;
+
+  return new Intl.DateTimeFormat(locale).format(date);
 };
 
 const displayMovements = (acc, sort = false) => {
@@ -178,7 +180,7 @@ const displayMovements = (acc, sort = false) => {
     const date = new Date(acc.movementsDates[i]);
 
     // const displayDate = date.toLocaleDateString();
-    const displayDate = formatMovementDate(date);
+    const displayDate = formatMovementDate(date, acc.locale);
 
     const html = `
       <div class="movements__row">
@@ -274,9 +276,10 @@ btnLogin.addEventListener('click', e => {
       weekday: 'short',
     };
     const locale = navigator.language;
-    labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(
-      now
-    );
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
 
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
